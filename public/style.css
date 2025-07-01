@@ -56,3 +56,17 @@ canvas {
 .top-right { top: -20px; right: -20px; }
 .bottom-left { bottom: -20px; left: -20px; }
 .bottom-right { bottom: -20px; right: -20px; }
+
+#resetBtn {
+  background-color: #FF0000;
+  color: #FFD700;
+  border: none;
+  padding: 8px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 8px;
+}
+#resetBtn:hover {
+  background-color: #AA0000;
+}

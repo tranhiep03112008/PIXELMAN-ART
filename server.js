@@ -11,6 +11,8 @@ const canvas = Array.from({ length: CANVAS_HEIGHT }, () =>
 
 app.use(express.static("public"));
 
+const RESET_PASSWORD = "Đố em biết"; // Mât khẩu để reset canvas
+
 io.on("connection", (socket) => {
   console.log("Người dùng kết nối:", socket.id);
   socket.emit("init", canvas);
@@ -30,6 +32,22 @@ io.on("connection", (socket) => {
       io.emit("updatePixel", { x, y, color });
       lastPlaced[socket.id] = now; // cập nhật thời gian đặt pixel
     }
+  });
+  
+  socket.on("resetCanvas", ({ password }) => {
+    if (password !== RESET_PASSWORD) {
+      console.log(`Reset thất bại: Sai mật khẩu từ ${socket.id}`);
+      socket.emit("resetFailed", "Sai mật khẩu!");
+      return;
+    }
+
+    console.log(`Canvas được reset bởi: ${socket.id}`);
+    for (let y = 0; y < CANVAS_HEIGHT; y++) {
+      for (let x = 0; x < CANVAS_WIDTH; x++) {
+        canvas[y][x] = "#ffffff";
+      }
+    }
+    io.emit("init", canvas);
   });
 });
 

@@ -48,3 +48,14 @@ canvas.addEventListener("click", (e) => {
   const color = colorPicker.value;
   socket.emit("placePixel", { x, y, color });
 });
+
+const resetBtn = document.getElementById("resetBtn");
+resetBtn.addEventListener("click", () => {
+  const pwd = prompt("Nhập mật khẩu để reset canvas:");
+  if (pwd) {
+    socket.emit("resetCanvas", { password: pwd });
+  }
+});
+socket.on("resetFailed", (msg) => {
+  alert(msg);
+});
