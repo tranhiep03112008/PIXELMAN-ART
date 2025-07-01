@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Iron Pixel Art</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🛡️ Iron Pixel Art 🛡️</h1>
+  <div id="info">Chọn màu và click để vẽ! ⏱️</div>
+  <div id="canvasContainer">
+  <canvas id="canvas"></canvas>
+  
+<img class="corner top-left" src="images/ironman1.png" alt="Iron Man TL" />
+    <img class="corner top-right" src="images/ironman2.png" alt="Iron Man TR" />
+    <img class="corner bottom-left" src="images/ironman3.png" alt="Iron Man BL" />
+    <img class="corner bottom-right" src="images/ironman4.png" alt="Iron Man BR" />
+  </div>
+
+  <div class="controls">
+    <input type="color" id="colorPicker" value="#ff0000" />
+    <span id="cooldownMsg"></span>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
