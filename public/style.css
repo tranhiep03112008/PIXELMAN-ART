@@ -70,3 +70,11 @@ canvas {
 #resetBtn:hover {
   background-color: #AA0000;
 }
+
+.blink {
+  animation: blinkAnim 0.5s step-start infinite;
+}
+
+@keyframes blinkAnim {
+  50% { opacity: 0; }
+}

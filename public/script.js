@@ -4,8 +4,11 @@ const ctx = canvas.getContext("2d");
 const colorPicker = document.getElementById("colorPicker");
 const cooldownMsg = document.getElementById("cooldownMsg");
 
-const PIXEL_SIZE = 10; // tắng gấp đôi kích thước pixel
+const PIXEL_SIZE = 10; // tăng gấp đôi kích thước pixel
 let canvasWidth, canvasHeight;
+
+let lastPlacedTime = 0;
+let cooldownInterval;
 
 // Nhận canvas ban đầu
 socket.on("init", (data) => {
@@ -19,10 +22,6 @@ socket.on("init", (data) => {
 // Cập nhật pixel từ server
 socket.on("updatePixel", ({ x, y, color }) => {
   drawPixel(x, y, color);
-});
-
-socket.on("cooldown", ({ timeLeft }) => {
-  cooldownMsg.innerText = `⏳ Đợi ${timeLeft}s trước khi vẽ tiếp...`;
 });
 
 // Vẽ toàn bộ canvas
@@ -40,8 +39,37 @@ function drawPixel(x, y, color) {
   ctx.fillRect(x * PIXEL_SIZE, y * PIXEL_SIZE, PIXEL_SIZE, PIXEL_SIZE);
 }
 
+// Hàm bắt đầu cooldown và cập nhật liên tục
+function startCooldown() {
+  clearInterval(cooldownInterval);
+  cooldownInterval = setInterval(() => {
+    const now = Date.now();
+    const remainingMs = lastPlacedTime + 5000 - now;
+    if (remainingMs <= 0) {
+      cooldownMsg.innerText = "";
+      cooldownMsg.classList.remove("blink");
+      clearInterval(cooldownInterval);
+    } else {
+      const remaining = Math.ceil(remainingMs / 1000);
+      cooldownMsg.innerText = `⏳ Đợi ${remaining}s trước khi vẽ tiếp...`;
+      if (remaining <= 3) {
+        cooldownMsg.classList.add("blink");
+      } else {
+        cooldownMsg.classList.remove("blink");
+      }
+    }
+  }, 200);
+}
+
 // Sự kiện click chuột để đặt pixel
 canvas.addEventListener("click", (e) => {
+  const now = Date.now();
+  if (now - lastPlacedTime < 5000) {
+    return; // đang cooldown, không cho click tiếp
+  }
+  lastPlacedTime = now;
+  startCooldown();
+
   const rect = canvas.getBoundingClientRect();
   const x = Math.floor((e.clientX - rect.left) / PIXEL_SIZE);
   const y = Math.floor((e.clientY - rect.top) / PIXEL_SIZE);
@@ -49,6 +77,7 @@ canvas.addEventListener("click", (e) => {
   socket.emit("placePixel", { x, y, color });
 });
 
+// Nút reset với mật khẩu
 const resetBtn = document.getElementById("resetBtn");
 resetBtn.addEventListener("click", () => {
   const pwd = prompt("Nhập mật khẩu để reset canvas:");
