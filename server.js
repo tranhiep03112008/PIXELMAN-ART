@@ -11,7 +11,7 @@ const canvas = Array.from({ length: CANVAS_HEIGHT }, () =>
 
 app.use(express.static("public"));
 
-const RESET_PASSWORD = "Đố em biết"; // Mât khẩu để reset canvas
+const RESET_PASSWORD = "HiệpDZ"; // Mât khẩu để reset canvas
 
 io.on("connection", (socket) => {
   console.log("Người dùng kết nối:", socket.id);
